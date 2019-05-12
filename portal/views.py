@@ -67,3 +67,6 @@ def admin_home(request):
 @user_passes_test(lambda u: u.is_superuser)
 def survey_report(request, survey_id):
     survey = get_object_or_404(Survey, id=survey_id)
+    report_dict = survey.get_question_wise_report
+    return render(request, 'my_admin/survey_q_wise_report.html',
+                  {'survey': survey, 'report_dict': report_dict, 'total_votes': survey.response_set.count()})

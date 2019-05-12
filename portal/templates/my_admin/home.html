@@ -10,7 +10,7 @@
         <h4>Anonymous Survey</h4>
 
         {% for survey in surveys %}
-            <h5><a href="{{ survey.get_absolute_url }}"><button class="btn blue-gradient text-white font-weight-bold">{{ survey.name }}</button></a></h5>
+            <h5><a href="{% url "survey_report" survey_id=survey.id %}"><button class="btn blue-gradient text-white font-weight-bold">{{ survey.name }}</button></a></h5>
         {% endfor %}
 
     </div>
