@@ -1,0 +1,184 @@
+{% extends "portal/base.html" %}
+
+{% block title %}{{ survey.name }}{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <div class="card border-primary mb-3">
+          <div class="card-header">1</div>
+          <div class=" card-body heavy-rain-gradient text-primary" >
+            <h5 class="card-title">Q - Some quick example text to build on the panel title and make up the</h5>
+              <br>
+               <div class="btn-group btn-group-toggle d-flex flex-column flex-sm-row" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 2
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                   <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                   <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                </div>
+          </div>
+        </div>
+        <br><br>
+
+
+        <div class="card border-primary mb-3">
+          <div class="card-header">1</div>
+          <div class="card-body heavy-rain-gradient text-primary">
+            <h5 class="card-title">Q - Some quick example text to build on the panel title and make up the</h5>
+              <br>
+               <div class="btn-group btn-group-toggle d-flex flex-column flex-sm-row" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 2
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                   <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                   <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                </div>
+          </div>
+        </div>
+        <br><br>
+
+
+        <div class="card border-primary mb-3">
+          <div class="card-header">1</div>
+          <div class="card-body text-primary">
+            <h5 class="card-title">Q - Some quick example text to build on the panel title and make up the</h5>
+              <br>
+               <div class="btn-group btn-group-toggle d-flex flex-column flex-md-row" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 2
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                   <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                   <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                </div>
+          </div>
+        </div>
+        <br><br>
+
+        <div class="card border-primary mb-3">
+          <div class="card-header">1</div>
+          <div class="card-body text-primary">
+            <h5 class="card-title">Q - Some quick example text to build on the panel title and make up the</h5>
+              <br>
+               <div class="btn-group btn-group-toggle d-flex flex-column flex-md-row" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 2
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                   <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                   <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                </div>
+          </div>
+        </div>
+        <br><br>
+
+        <div class="card border-primary mb-3">
+          <div class="card-header">1</div>
+          <div class="card-body text-primary">
+            <h5 class="card-title">Q - Some quick example text to build on the panel title and make up the</h5>
+              <br>
+               <div class="btn-group btn-group-toggle d-flex flex-column flex-md-row" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 2
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                   <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                   <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                </div>
+          </div>
+        </div>
+        <br><br>
+
+        <div class="card border-primary mb-3">
+          <div class="card-header">1</div>
+          <div class="card-body text-primary">
+            <h5 class="card-title">Q - Some quick example text to build on the panel title and make up the</h5>
+              <br>
+               <div class="btn-group btn-group-toggle d-flex flex-column flex-md-row" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 2
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                   <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                   <label class="btn btn-primary">
+                    <input type="radio" autocomplete="off"> Checkbox 3
+                  </label>
+                </div>
+          </div>
+        </div>
+        <br><br><br><br>
+
+        <button style="margin: auto" type="button" class="btn text-white blue-gradient btn-lg btn-block center">Submit the Survey</button>
+
+    </div>
+
+    <form method="post" action="{% url "survey_start" slug=survey.slug %}" class="text-left">
+
+        {% csrf_token %}
+
+        {% for question in questions %}
+            <h3>{{ question.question_text }}</h3>
+            <div class="row">
+                <br>
+
+                {% for choice in question.choice_set.all %}
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <input type="radio" name="ans-{{ question.slug }}"
+                                       id="choice{{ forloop.counter }}"
+                                       value="{{ choice.slug }}" />
+                            </span>
+                            <span class="form-control">
+                                {{ choice.choice_text }}
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <br><hr><br>
+        {% endfor %}
+
+        <input type="submit" value="Submit" class="btn btn-success"/>
+
+    </form>
+
+
+{% endblock %}

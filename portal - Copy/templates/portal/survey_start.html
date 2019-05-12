@@ -1,0 +1,29 @@
+{% extends "portal/base.html" %}
+
+{% block title %}{{ survey.name }}{% endblock %}
+
+{% block content %}
+
+    <form method="post" action="{% url "survey_start" slug=survey.slug %}">
+
+        {% csrf_token %}
+
+        {% for question in questions %}
+
+            <div id="question_{{ question.serial_number }}" class="container jumbotron" >
+                <h4>Q{{ forloop.counter }} - {{ question.question_text }}</h4>
+
+                    {% for choice in question.choice_set.all %}
+                        <label for="{{ choice.id }}">{{ choice.choice_text }}</label>
+                        <input required id="{{ choice.id }}" type="radio" name="ans-{{ question.slug }}" value="{{ choice.slug }}">
+                    {% endfor %}
+            <br>
+            </div>
+        {% endfor %}
+
+        <input type="submit" value="Submit" class="btn btn-success"/>
+
+    </form>
+
+
+{% endblock %}

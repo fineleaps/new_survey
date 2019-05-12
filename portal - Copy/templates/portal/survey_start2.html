@@ -1,0 +1,82 @@
+{% extends "portal/base.html" %}
+
+{% block title %}{{ survey.name }}{% endblock %}
+
+{% block content %}
+
+    <form method="post" action="{% url "survey_start" slug=survey.slug %}">
+
+        {% csrf_token %}
+
+        {% for question in questions %}
+
+            <div id="question_{{ question.serial_number }}" class="container jumbotron" style="display: {% if forloop.counter != 1 %}none{% endif %}">
+                <h4>Q{{ forloop.counter }} - {{ question.question_text }}</h4>
+
+                    {% for choice in question.choice_set.all %}
+                        <label for="{{ choice.id }}">{{ choice.choice_text }}</label>
+                        <input id="{{ choice.id }}" type="radio" name="question-{{ question.serial_number }}" value="{{ choice.id }}">
+                    {% endfor %}
+            <br>
+            </div>
+
+        {% endfor %}
+
+
+        <button type="button" class="btn btn-primary" onclick="prev_question()" >Prev</button>
+        <button type="button" class="btn btn-primary" onclick="next_question()" >Next</button>
+<br><br>
+        <ul class="pagination">
+
+
+             {% for qidd in survey.get_question_html_ids %}
+                 <li id="link_{{ qidd }}" class="{% if forloop.counter == 1 %}active{% endif %}" onclick="change_div({{ qidd }}, this.id);">
+                     <a >{{ forloop.counter }}</a>
+                 </li>
+             {% endfor %}
+
+        </ul>
+
+<br><br>
+
+
+        <input value="Submit" class="btn btn-success"/>
+
+    </form>
+
+{% endblock %}
+
+{% block extrajs %}
+`
+    <script>
+
+        var current_page = 'question_1';
+        var current_link_id = 'link_question_1';
+
+        function next_question() {
+            if (current_page !== {{ survey.get_highest_html_id }}){
+                {#alert(current_page.slice(-1));#}
+                next_page_id = 'question_' + (parseInt(current_page.slice(-1))+1);
+                next_link_id = 'link_question_' + (parseInt(current_link_id[-1])+1);
+                change_div(next_page_id, next_link_id);
+            }
+        }
+
+        function change_div(question_id, link_id) {
+            question_idd = 'question_'+question_id;
+            alert(question_idd);
+            var current_div = document.getElementById(current_page);
+            current_div.style.display = "none";
+            new_div = document.getElementById(question_idd);
+            new_div.style.display = "block";
+            current_page = question_idd.id;
+            current_link = document.getElementById(current_link_id);
+            current_link.className = '';
+            new_link = document.getElementById(link_id);
+            new_link.className = 'active';
+            current_link_id = link_id;
+
+        }
+    </script>
+
+{% endblock %}

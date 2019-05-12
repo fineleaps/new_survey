@@ -1,0 +1,20 @@
+{% extends "portal/base.html" %}
+
+{% block title %}{{ survey.name }}{% endblock %}
+
+{% block content %}
+
+    <h3>{{ survey.name }}</h3>
+
+    <p>purpose : {{ survey.purpose }}</p>
+
+    <br>
+
+    <p>instructions : {{ survey.instructions }}</p>
+
+    <br>
+
+    <a href="{% url "survey_start" slug=survey.slug %}"><button class="btn btn-primary">Start Survey</button></a>
+
+
+{% endblock %}
