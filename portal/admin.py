@@ -28,8 +28,23 @@ class QuestionAdmin(admin.ModelAdmin):
     list_filter = ('survey', )
 
 
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ('response', 'question', 'choice')
+    list_filter = ('response', 'question', 'choice')
+
+
+class ResponseAdmin(admin.ModelAdmin):
+    list_display = ('user', 'survey')
+    list_filter = ('user', 'survey')
+
+
+class ChoiceAdmin(admin.ModelAdmin):
+    list_filter = ('question', 'possitive_count')
+    list_display = ('question', 'choice_text', 'serial_number', 'possitive_count')
+
+
 admin.site.register(Survey, SurveyAdmin)
 admin.site.register(Question, QuestionAdmin)
-admin.site.register(Choice)
-admin.site.register(Answer)
-admin.site.register(Response)
+admin.site.register(Choice, ChoiceAdmin)
+admin.site.register(Answer, AnswerAdmin)
+admin.site.register(Response, ResponseAdmin)

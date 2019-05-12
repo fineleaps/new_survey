@@ -32,6 +32,10 @@ class Survey(models.Model):
         return self.question_set.exists()
 
     @property
+    def get_instructions(self):
+        return self.instructions.split('\n')
+
+    @property
     def get_question_html_ids(self):
         return [str(qid) for qid in self.question_set.all().values_list('serial_number', flat=True)]
 
@@ -42,6 +46,10 @@ class Survey(models.Model):
     @property
     def get_lowest_html_id(self):
         return "question_" + str(self.question_set.all().order_by('serial_number').first().serial_number)
+    #
+    # def get_question_wise_report(self):
+    #     for i in self.response_set.all():
+    #
 
     objects = SurveyManager()
 
@@ -60,8 +68,9 @@ class Question(models.Model):
     question_text = models.CharField(max_length=64)
     slug = models.SlugField(blank=True)
     serial_number = models.PositiveSmallIntegerField(default=30)
-
-    # choice_unit = models.CharField(max_length=12, blank=True, null=True)
+    possitive_or_negative = models.BooleanField(default=True)
+    rating_type = models.BooleanField(default=False)
+    choice_unit = models.CharField(max_length=12, blank=True, null=True)
 
     def __str__(self):
         return self.question_text
@@ -80,16 +89,31 @@ def add_q_slug(sender, instance, *args, **kwargs):
 
 post_save.connect(add_q_slug, sender=Question)
 
+possitive_count_class = ('danger', 'orange', 'yellow', 'lightgreen', 'green')
+
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=32)
     slug = models.SlugField(blank=True)
     serial_number = models.PositiveSmallIntegerField(default=1)
+    possitive_count = models.PositiveSmallIntegerField(default=1)
 
     def __str__(self):
         return "{} - {}".format(self.question.question_text, self.choice_text)
 
+    @property
+    def get_rating_tag(self):
+        if self.question.rating_type:
+            return "star"
+
+    @property
+    def get_possitive_count(self):
+        return possitive_count_class[self.possitive_count-1]
+
+    @property
+    def get_name_with_unit(self):
+        return self.choice_text + self.question.choice_unit
 
 
 def add_c_slug(sender, instance, *args, **kwargs):
@@ -118,6 +142,7 @@ class Response(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
+    user_feedback = models.TextField(blank=True)
 
     def __str__(self):
         return str(self.id)

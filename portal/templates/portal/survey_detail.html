@@ -10,7 +10,8 @@
           <div class="card-header bg-primary text-white">
               <h5 class="font-weight-bold text-lg-center">{{ survey.name }}</h5>
           </div>
-          <div class="card-body col-lg-10" style="margin: auto">
+          <div class="cloudy-knoxville-gradient
+ card-body">
             <h6 class="card-title"><span class="text-primary">Purpose</span> : {{ survey.purpose }}</h6>
                <br>
               <ul class="list-group">
@@ -18,16 +19,10 @@
                     <div class="md-v-line text-lg">Instructions</div>
                   </li>
                   {% for i in survey.get_instructions %}
-                  <li class="list-group-item">
-                    <div class="md-v-line"></div>{{ i }}
+                  <li class="list-group-item ">
+                    {{ forloop.counter }}- {{ i }}
                   </li>
                   {% endfor %}
-                  <li class="list-group-item">
-                    <div class="md-v-line"></div> leo risus
-                  </li>
-                  <li class="list-group-item">
-                    <div class="md-v-line"></div>Porta ac consectetur ac
-                  </li>
             </ul>
 
             <br><br>
