@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.utils.text import slugify
 from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import User
-from django.db.models import Count, Avg, Max
+from django.db.models import Avg, Max
 
 
 class SurveyManager(models.Manager):
@@ -79,12 +79,13 @@ pre_save.connect(add_s_slug, sender=Survey)
 
 class Question(models.Model):
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
-    question_text = models.CharField(max_length=64)
+    question_text = models.CharField(max_length=128)
     slug = models.SlugField(blank=True)
     serial_number = models.PositiveSmallIntegerField()
     possitive_or_negative = models.BooleanField(default=True)
     rating_type = models.BooleanField(default=False)
-    choice_unit = models.CharField(max_length=12, blank=True, null=True)
+    choice_unit = models.CharField(max_length=12, default="", blank=True)
+    icon_class = models.CharField(max_length=32, default="", blank=True)
 
     def __str__(self):
         return self.question_text
@@ -93,6 +94,13 @@ class Question(models.Model):
     # def get_chart_choice_labels(self):
     #     print(type([choice.choice_text for choice in self.choice_set.all()]))
     #     return [str(choice.choice_text) for choice in self.choice_set.all()]
+
+    @property
+    def get_choice_unit(self):
+        if self.choice_unit:
+            return self.choice_unit
+        else:
+            return ""
 
     @property
     def display_link(self):
@@ -113,10 +121,11 @@ class Question(models.Model):
     def get_possitive_response(self):
         if self.possitive_or_negative:
             av = Answer.objects.filter(question=self, question__possitive_or_negative=True).aggregate(Avg('choice__possitive_count'))['choice__possitive_count__avg']
-            ma = Answer.objects.filter(question=self, question__possitive_or_negative=True).aggregate(Max('choice__possitive_count'))['choice__possitive_count__max']
+            ma = Choice.objects.filter(question=self, question__possitive_or_negative=True).aggregate(Max('possitive_count'))['possitive_count__max']
             return round(((av/ma)*100), 2)
         else:
             return 'N/A'
+
 
 
 def add_q_slug(sender, instance, *args, **kwargs):
@@ -133,7 +142,7 @@ possitive_count_class = ('#d9534f', '#FF8C00', '#FFD700', '#5bc0de', '#5cb85c')
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=32)
+    choice_text = models.CharField(max_length=64)
     slug = models.SlugField(blank=True)
     chart_text = models.CharField(max_length=12, blank=True)
     serial_number = models.PositiveSmallIntegerField()
@@ -152,8 +161,16 @@ class Choice(models.Model):
         return possitive_count_class[self.possitive_count-1]
 
     @property
-    def get_name_with_unit(self):
-        return self.choice_text + self.question.choice_unit
+    def get_display_choice_name(self):
+        return self.choice_text + " " + self.question.get_choice_unit
+
+    @property
+    def get_chart_text(self):
+        return self.chart_text + self.question.get_choice_unit
+
+    @property
+    def get_icon_class(self):
+        return self.question.icon_class
 
 
 def add_c_slug(sender, instance, *args, **kwargs):

@@ -46,7 +46,7 @@ def survey_start(request, slug):
         if request.method == "POST":
             post_dict = request.POST
             response = Response.objects.get_or_create(user=request.user, survey=survey, user_feedback=post_dict['feedback'])[0]
-            Answer.objects.bulk_create([Answer(question_id=int(choice[4:]), choice_id=int(post_dict[choice]), response=response) for choice in post_dict if 'choice_' in choice])
+            Answer.objects.bulk_create([Answer(question_id=int(choice[7:]), choice_id=int(post_dict[choice]), response=response) for choice in post_dict if 'choice_' in choice])
             return redirect('survey_submitted')
         else:
             user_responses = Response.objects.filter(user=request.user, survey=survey)
@@ -54,7 +54,7 @@ def survey_start(request, slug):
                 questions = survey.question_set.all()
                 return render(request, 'portal/survey_start.html', {'questions': questions, 'survey': survey})
             else:
-                if user_responses.first().check_complete():
+                if user_responses.first().check_complete:
                     return redirect('survey_already_done', slug=slug)
                 else:
                     user_responses.first().delete()

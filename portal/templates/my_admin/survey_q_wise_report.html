@@ -51,7 +51,7 @@
           var myChart{{ question.id }} = new Chart(ctx{{ question.id }}, {
             type: 'bar',
             data: {
-              labels: [{% for choice in mini_dict.keys %}"{{ choice.chart_text }}", {% endfor %}],
+              labels: [{% for choice in mini_dict.keys %}"{{ choice.get_chart_text }}", {% endfor %}],
               datasets: [{
                 label: 'out off {{ question.get_total_votes }} Votes',
                   data: [{% for count in mini_dict.values %}{{ count }}, {% endfor %}],
