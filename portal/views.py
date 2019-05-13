@@ -16,7 +16,11 @@ def home(request):
     if request.user.is_superuser:
         return redirect('admin_home')
     else:
-        return redirect('survey_detail', slug=Survey.objects.filter(active=True).first().slug)
+        surveys = Survey.objects.filter(active=True)
+        if surveys.exists():
+            return redirect('survey_detail', surveys.first().slug)
+        else:
+            return render(request, 'portal/home.html', {'surveys': surveys})
         # surveys = Survey.objects.active()
         # return render(request, 'portal/home.html', {'surveys': surveys})
 
