@@ -63,7 +63,7 @@ class Survey(models.Model):
         pn_questions = self.question_set.filter(possitive_or_negative=True)
         obt = sum([q.get_possitive_response for q in pn_questions])
         total = pn_questions.count()*100
-        return float((obt/total)*100)
+        return round(((obt/total)*100), 2)
 
     objects = SurveyManager()
 
@@ -81,7 +81,7 @@ class Question(models.Model):
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=64)
     slug = models.SlugField(blank=True)
-    serial_number = models.PositiveSmallIntegerField(default=30)
+    serial_number = models.PositiveSmallIntegerField()
     possitive_or_negative = models.BooleanField(default=True)
     rating_type = models.BooleanField(default=False)
     choice_unit = models.CharField(max_length=12, blank=True, null=True)
@@ -105,14 +105,18 @@ class Question(models.Model):
     @property
     def get_response_average(self):
         if self.possitive_or_negative:
-            return Answer.objects.filter(question=self).aggregate(Avg('choice__possitive_count'))['choice__possitive_count__avg']
+            return round(Answer.objects.filter(question=self, question__possitive_or_negative=True).aggregate(Avg('choice__possitive_count'))['choice__possitive_count__avg'], 2)
+        else:
+            return 'N/A'
 
     @property
     def get_possitive_response(self):
         if self.possitive_or_negative:
-            av = Answer.objects.filter(question=self).aggregate(Avg('choice__possitive_count'))['choice__possitive_count__avg']
-            ma = Answer.objects.filter(question=self).aggregate(Max('choice__possitive_count'))['choice__possitive_count__max']
-            return (av/ma)*100
+            av = Answer.objects.filter(question=self, question__possitive_or_negative=True).aggregate(Avg('choice__possitive_count'))['choice__possitive_count__avg']
+            ma = Answer.objects.filter(question=self, question__possitive_or_negative=True).aggregate(Max('choice__possitive_count'))['choice__possitive_count__max']
+            return round(((av/ma)*100), 2)
+        else:
+            return 'N/A'
 
 
 def add_q_slug(sender, instance, *args, **kwargs):
@@ -170,7 +174,7 @@ post_save.connect(add_c_slug, sender=Choice)
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.PROTECT)
-    choice = models.ForeignKey(Choice, on_delete=models.PROTECT, blank=True, null=True)
+    choice = models.ForeignKey(Choice, on_delete=models.PROTECT)
     response = models.ForeignKey('Response', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -188,6 +192,10 @@ class Response(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+    @property
+    def check_complete(self):
+        return self.survey.question_set.count() == self.answer_set.count()
 
     class Meta:
         unique_together = ('user', 'survey')

@@ -1,2 +1,3 @@
 django-lazysignup
 django-bootstrap4
+django==2

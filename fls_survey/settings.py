@@ -132,3 +132,9 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'lazysignup.backends.LazySignupBackend',
 )
+
+
+from django.urls import reverse_lazy
+
+LOGIN_REDIRECT_URL = reverse_lazy('home')
+LOGIN_URL = reverse_lazy('admin_login')

@@ -6,8 +6,7 @@
     <br><br><br>
 
     <div class="container text-center" style="height: 800px">
-        <h3>Welcome To Fine-Leap Systems</h3>
-        <h4>Anonymous Survey</h4>
+        <h3 class="font-weight-bolder text-primary">Welcome To Fine-Leap Systems Anonymous Survey</h3>
 
         {% for survey in surveys %}
             <h5><a href="{{ survey.get_absolute_url }}"><button class="btn blue-gradient text-white font-weight-bold">{{ survey.name }}</button></a></h5>

@@ -1,4 +1,4 @@
-{% extends "my_admin/base.html" %}
+{% extends "portal/base.html" %}
 
 {% block title %}{{ survey.name }}{% endblock %}
 
@@ -15,7 +15,7 @@
                      Q{{ forloop.counter }}- {{ question.question_text }} |
                      Total Votes = {{ question.get_total_votes }} |
                      Average = {{ question.get_response_average }} |
-                     Possitive Response = {{ question.get_possitive_response|floatformat }} %
+                     Possitive Response = {{ question.get_possitive_response }} %
                  </div>
                  <br>
                  <div class="row">
@@ -32,7 +32,9 @@
              </div>
              <br>
         {% endfor %}
-
+            <div class="col-lg-6" style="margin: auto">
+                <a href="{% url "home" %}" class="btn btn-primary blue-gradient btn-lg btn-block" >GO BACK</a>
+            </div>
     </div>
 
 {% endblock %}
@@ -109,5 +111,7 @@
 
   {% endfor %}
 </script>
+
+
 
 {% endblock %}

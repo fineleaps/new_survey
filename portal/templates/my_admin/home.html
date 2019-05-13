@@ -6,12 +6,15 @@
     <br><br><br>
 
     <div class="container text-center" style="height: 800px">
-        <h3>Welcome To Fine-Leap Systems</h3>
-        <h4>Anonymous Survey</h4>
+        <h3 class="font-weight-bolder text-primary">Welcome To Fine-Leap Systems Anonymous Survey</h3>
 
+        <br>
         {% for survey in surveys %}
-            <h5><a href="{% url "survey_report" survey_id=survey.id %}"><button class="btn blue-gradient text-white font-weight-bold">{{ survey.name }}</button></a></h5>
+            <h5><a href="{% url "survey_report" survey_id=survey.id %}"><button class="btn blue-gradient text-white font-weight-bold">{{ survey.name }} Report</button></a></h5>
         {% endfor %}
+
+        <br><br><br>
+            <h5><a href="{% url "admin_logout" %}"><button class="btn young-passion-gradient text-white font-weight-bold">Logout</button></a></h5>
 
     </div>
 

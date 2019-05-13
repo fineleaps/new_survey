@@ -19,7 +19,7 @@
                    <div class="btn-group btn-group-toggle d-flex flex-column flex-md-row" data-toggle="buttons">
                       {% for choice in question.choice_set.all %}
                           <label id="choice_label" class="btn btn-light-blue">
-                            <input required name="ans-{{ question.id }}"  type="radio" value="{{ choice.id }}" autocomplete="off">{{ choice.choice_text }}
+                            <input required name="choice_{{ question.id }}"  type="radio" value="{{ choice.id }}" autocomplete="off">{{ choice.choice_text }}
                           </label>
                       {% endfor %}
                    </div>

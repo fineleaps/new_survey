@@ -1,8 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import TemplateView, DetailView
-from .models import Survey, Question, Choice, Answer, Response
+from django.views.generic import  DetailView
+from .models import Survey, Answer, Response
 from django.http import Http404, HttpResponse
-import uuid
 from lazysignup.decorators import allow_lazy_user
 from django.contrib.auth.decorators import user_passes_test
 
@@ -14,9 +13,12 @@ def clear_session(request):
 
 @allow_lazy_user
 def home(request):
-    return redirect('survey_detail', slug=Survey.objects.filter(active=True).first().slug)
-    # surveys = Survey.objects.active()
-    # return render(request, 'portal/home.html', {'surveys': surveys})
+    if request.user.is_superuser:
+        return redirect('admin_home')
+    else:
+        return redirect('survey_detail', slug=Survey.objects.filter(active=True).first().slug)
+        # surveys = Survey.objects.active()
+        # return render(request, 'portal/home.html', {'surveys': surveys})
 
 
 class SurveyDetailView(DetailView):
@@ -40,14 +42,20 @@ def survey_start(request, slug):
         if request.method == "POST":
             post_dict = request.POST
             response = Response.objects.get_or_create(user=request.user, survey=survey, user_feedback=post_dict['feedback'])[0]
-            Answer.objects.bulk_create([Answer(question_id=int(ans[4:]), choice_id=int(post_dict[ans]), response=response) for ans in post_dict if 'ans' in ans])
+            Answer.objects.bulk_create([Answer(question_id=int(choice[4:]), choice_id=int(post_dict[choice]), response=response) for choice in post_dict if 'choice_' in choice])
             return redirect('survey_submitted')
         else:
-            if not Response.objects.filter(user=request.user, survey=survey).exists():
+            user_responses = Response.objects.filter(user=request.user, survey=survey)
+            if not user_responses.exists():
                 questions = survey.question_set.all()
                 return render(request, 'portal/survey_start.html', {'questions': questions, 'survey': survey})
             else:
-                return redirect('survey_already_done', slug=slug)
+                if user_responses.first().check_complete():
+                    return redirect('survey_already_done', slug=slug)
+                else:
+                    user_responses.first().delete()
+                    questions = survey.question_set.all()
+                    return render(request, 'portal/survey_start.html', {'questions': questions, 'survey': survey})
     else:
         return HttpResponse('Survey has no question')
 
