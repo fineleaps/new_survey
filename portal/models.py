@@ -29,6 +29,10 @@ class Survey(models.Model):
         return reverse_lazy('survey_detail', kwargs={'slug': self.slug})
 
     @property
+    def get_questions(self):
+        return self.question_set.order_by('serial_number')
+
+    @property
     def has_questions(self):
         return self.question_set.exists()
 
@@ -53,7 +57,7 @@ class Survey(models.Model):
         report_dict = {}
         for question in self.question_set.all():
             mini_dict = {}
-            for choice in question.choice_set.all():
+            for choice in question.get_choices:
                 mini_dict[choice] = Answer.objects.filter(choice=choice).count()
             report_dict[question] = mini_dict
         return report_dict
@@ -89,11 +93,10 @@ class Question(models.Model):
 
     def __str__(self):
         return self.question_text
-    #
-    # @property
-    # def get_chart_choice_labels(self):
-    #     print(type([choice.choice_text for choice in self.choice_set.all()]))
-    #     return [str(choice.choice_text) for choice in self.choice_set.all()]
+
+    @property
+    def get_choices(self):
+        return self.choice_set.order_by('serial_number')
 
     @property
     def get_choice_unit(self):
@@ -125,7 +128,6 @@ class Question(models.Model):
             return round(((av/ma)*100), 2)
         else:
             return 'N/A'
-
 
 
 def add_q_slug(sender, instance, *args, **kwargs):

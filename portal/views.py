@@ -51,14 +51,14 @@ def survey_start(request, slug):
         else:
             user_responses = Response.objects.filter(user=request.user, survey=survey)
             if not user_responses.exists():
-                questions = survey.question_set.all()
+                questions = survey.get_questions
                 return render(request, 'portal/survey_start.html', {'questions': questions, 'survey': survey})
             else:
                 if user_responses.first().check_complete:
                     return redirect('survey_already_done', slug=slug)
                 else:
                     user_responses.first().delete()
-                    questions = survey.question_set.all()
+                    questions = survey.get_questions
                     return render(request, 'portal/survey_start.html', {'questions': questions, 'survey': survey})
     else:
         return HttpResponse('Survey has no question')

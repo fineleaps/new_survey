@@ -17,7 +17,7 @@
                 <h5 class="card-title">Q - {{ question.question_text }}</h5>
                   <br>
                    <div class="btn-group btn-group-toggle d-flex flex-column flex-md-row" data-toggle="buttons">
-                      {% for choice in question.choice_set.all %}
+                      {% for choice in question.get_choices %}
                           <label id="choice_label" class="btn btn-light-blue">
                             <input required name="choice_{{ question.id }}"  type="radio" value="{{ choice.id }}" autocomplete="off">{{ choice.get_display_choice_name }} <i class="fas {{ choice.get_icon_class }}"></i>
                           </label>
